@@ -1,5 +1,5 @@
 import 'package:employees_app/src/ui/screens/employee_details_screen.dart';
-import 'package:employees_app/src/ui/screens/employee_list_screen.dart';
+import 'package:employees_app/src/ui/screens/employee_list_screen/employee_list_screen.dart';
 import 'package:employees_app/src/ui/screens/new_employees_screen.dart';
 
 class Routes {
