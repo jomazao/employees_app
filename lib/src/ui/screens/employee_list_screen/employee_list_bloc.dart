@@ -1,16 +1,21 @@
+import 'dart:async';
+
 import 'package:employees_app/src/data/employee_repository.dart';
+import 'package:employees_app/src/data/new_employees_service.dart';
 import 'package:employees_app/src/models/employee.dart';
 import 'package:flutter/cupertino.dart';
 
 class EmployeeListBloc extends ChangeNotifier {
   final employeeRepository = EmployeeRepository();
+  final _newEmployeesService = NewEmployeesService();
 
   List<Employee> employees = [];
   List<Employee> filteredEmployees = [];
 
   String sort;
-
   bool loading = false;
+  StreamSubscription newsSubscription;
+
   void loadEmployees() async {
     loading = true;
     notifyListeners();
@@ -22,7 +27,29 @@ class EmployeeListBloc extends ChangeNotifier {
     } else {
       loading = true;
     }
+    if (newsSubscription == null) {
+      final ids = await _newEmployeesService.getNewEmployees();
+      filteredEmployees = filteredEmployees.map((e) {
+        if (ids.any((nId) => nId == e.id)) {
+          return e..isNew = true;
+        }
+        return e..isNew = false;
+      }).toList();
+      subscribeToNewEmployeesStream();
+    }
     notifyListeners();
+  }
+
+  void subscribeToNewEmployeesStream() {
+    newsSubscription = _newEmployeesService.newsStream.listen((ids) {
+      filteredEmployees = filteredEmployees.map((e) {
+        if (ids.any((nId) => nId == e.id)) {
+          return e..isNew = true;
+        }
+        return e..isNew = false;
+      }).toList();
+      notifyListeners();
+    });
   }
 
   void filterByName(String name) {
@@ -62,5 +89,11 @@ class EmployeeListBloc extends ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    newsSubscription.cancel();
+    super.dispose();
   }
 }

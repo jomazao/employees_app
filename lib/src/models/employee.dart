@@ -4,6 +4,7 @@ class Employee {
   String position;
   int wage;
   List<Employee> employees;
+  bool isNew;
 
   Employee({
     this.id,
@@ -11,6 +12,7 @@ class Employee {
     this.position,
     this.wage,
     this.employees,
+    this.isNew = false,
   });
 
   factory Employee.fromMap(Map map) => Employee(
