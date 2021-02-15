@@ -1,0 +1,1 @@
+This is the model layer for every mapped class from database or other data sources
