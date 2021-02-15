@@ -15,10 +15,19 @@ class EmployeeListScreen extends StatelessWidget {
       child: Builder(
         builder: (context) {
           final bloc = context.watch<EmployeeListBloc>();
-
           return Scaffold(
+            appBar: AppBar(
+              title: TextFormField(
+                onChanged: (text) => bloc.filterByName(text),
+                decoration: InputDecoration(
+                    hintText: 'Buscar',
+                    suffixIcon: Icon(
+                      Icons.person_search,
+                    )),
+              ),
+            ),
             body: ListView(
-              children: bloc.employees
+              children: bloc.filteredEmployees
                   .map((e) => EmployeeCard(
                         employee: e,
                         onTap: () => Navigator.pushNamed(
@@ -26,6 +35,22 @@ class EmployeeListScreen extends StatelessWidget {
                             arguments: e),
                       ))
                   .toList(),
+            ),
+            floatingActionButton: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FloatingActionButton(
+                    heroTag: 'asc',
+                    child: Icon(Icons.arrow_upward),
+                    onPressed: () => bloc.sortBySalary()),
+                SizedBox(
+                  width: 2,
+                ),
+                FloatingActionButton(
+                    heroTag: 'desc',
+                    child: Icon(Icons.arrow_downward),
+                    onPressed: () => bloc.sortBySalary(upward: false))
+              ],
             ),
           );
         },
