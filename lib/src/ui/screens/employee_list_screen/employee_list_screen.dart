@@ -1,3 +1,4 @@
+import 'package:employees_app/src/ui/screens/employee_details_screen.dart';
 import 'package:employees_app/src/ui/screens/employee_list_screen/employee_card.dart';
 import 'package:employees_app/src/ui/screens/employee_list_screen/employee_list_bloc.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,6 +21,9 @@ class EmployeeListScreen extends StatelessWidget {
               children: bloc.employees
                   .map((e) => EmployeeCard(
                         employee: e,
+                        onTap: () => Navigator.pushNamed(
+                            context, EmployeeDetailsScreen.routeName,
+                            arguments: e),
                       ))
                   .toList(),
             ),

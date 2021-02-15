@@ -18,6 +18,13 @@ class Employee {
         name: map['name'],
         position: map['position'],
         wage: map['wage'],
-        employees: [],
+        employees: (map['employees'] as List)
+                ?.map((e) => Employee.fromMapIdName(e))
+                ?.toList() ??
+            [],
+      );
+  factory Employee.fromMapIdName(Map map) => Employee(
+        id: map['id'],
+        name: map['name'],
       );
 }
