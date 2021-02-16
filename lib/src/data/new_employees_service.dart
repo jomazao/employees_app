@@ -22,14 +22,19 @@ class NewEmployeesService {
     return ids == '' ? [] : ids.split(',').map((e) => int.parse(e)).toList();
   }
 
-  void addNewEmployee(int id) async {
+  Future<void> clearPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
+
+  Future<void> addNewEmployee(int id) async {
     final bIds = await getNewEmployees();
     bIds.add(id);
     final aIds = bIds.toSet().toList(); //ensure not repeating ids
     await saveNewEmployees(aIds);
   }
 
-  void removeNewEmployee(int id) async {
+  Future<void> removeNewEmployee(int id) async {
     final ids = await getNewEmployees();
     ids.remove(id);
     saveNewEmployees(ids);

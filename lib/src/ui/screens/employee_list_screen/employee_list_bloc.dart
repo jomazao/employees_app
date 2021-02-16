@@ -11,10 +11,21 @@ class EmployeeListBloc extends ChangeNotifier {
 
   List<Employee> employees = [];
   List<Employee> filteredEmployees = [];
-
+  bool searching = false;
   String sort;
   bool loading = false;
   StreamSubscription newsSubscription;
+
+  void enableSearch() {
+    searching = true;
+    notifyListeners();
+  }
+
+  void disableSearch() {
+    searching = false;
+    filterByName('');
+    notifyListeners();
+  }
 
   void loadEmployees() async {
     loading = true;

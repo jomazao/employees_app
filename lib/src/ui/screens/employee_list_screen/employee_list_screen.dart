@@ -1,6 +1,7 @@
+import 'package:employees_app/src/config/app_colors.dart';
 import 'package:employees_app/src/ui/screens/employee_details_screen/employee_details_screen.dart';
-import 'package:employees_app/src/ui/screens/employee_list_screen/employee_card.dart';
 import 'package:employees_app/src/ui/screens/employee_list_screen/employee_list_bloc.dart';
+import 'package:employees_app/src/ui/widgets/employee_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,14 +24,51 @@ class EmployeeListScreen extends StatelessWidget {
             child: Scaffold(
               key: _scaffoldKey,
               appBar: AppBar(
-                title: TextFormField(
-                  onChanged: (text) => bloc.filterByName(text),
-                  decoration: InputDecoration(
-                      hintText: 'Buscar empleado por nombre',
-                      suffixIcon: Icon(
-                        Icons.person_search,
-                      )),
-                ),
+                title: bloc.searching
+                    ? Row(
+                        children: [
+                          InkWell(
+                              onTap: bloc.disableSearch,
+                              child: Icon(
+                                Icons.arrow_back,
+                                color: AppColors.green,
+                              )),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Expanded(
+                            child: SizedBox(
+                              height: 35,
+                              child: TextFormField(
+                                onChanged: (text) => bloc.filterByName(text),
+                                decoration: InputDecoration(
+                                    hintText: 'Buscar por nombre',
+                                    suffixIcon: Icon(
+                                      Icons.person_search,
+                                      color: AppColors.green,
+                                    )),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                'Empleados',
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: bloc.enableSearch,
+                            child: Icon(
+                              Icons.search_outlined,
+                            ),
+                          ),
+                        ],
+                      ),
                 bottom: TabBar(tabs: [
                   Tab(
                     text: 'Todos',
@@ -45,8 +83,10 @@ class EmployeeListScreen extends StatelessWidget {
                         .map((e) => EmployeeCard(
                               employee: e,
                               onTap: () => Navigator.pushNamed(
-                                  context, EmployeeDetailsScreen.routeName,
-                                  arguments: e),
+                                context,
+                                EmployeeDetailsScreen.routeName,
+                                arguments: e,
+                              ),
                             ))
                         .toList(),
                   ),
@@ -55,7 +95,6 @@ class EmployeeListScreen extends StatelessWidget {
                           children: newEmployees
                               .map((e) => EmployeeCard(
                                     employee: e,
-                                    markNew: false,
                                     onTap: () => Navigator.pushNamed(context,
                                         EmployeeDetailsScreen.routeName,
                                         arguments: e),
@@ -70,7 +109,10 @@ class EmployeeListScreen extends StatelessWidget {
                 children: [
                   FloatingActionButton(
                       heroTag: 'asc',
-                      child: Icon(Icons.arrow_upward),
+                      child: Image.asset(
+                        'assets/desc.png',
+                        height: 50,
+                      ),
                       onPressed: () {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
                           content: Text('Ordenando por menor salario'),
@@ -79,11 +121,14 @@ class EmployeeListScreen extends StatelessWidget {
                         bloc.sortBySalary();
                       }),
                   SizedBox(
-                    width: 2,
+                    width: 5,
                   ),
                   FloatingActionButton(
                       heroTag: 'desc',
-                      child: Icon(Icons.arrow_downward),
+                      child: Image.asset(
+                        'assets/asc.png',
+                        height: 50,
+                      ),
                       onPressed: () {
                         _scaffoldKey.currentState.showSnackBar(SnackBar(
                           content: Text('Ordenando por mayor salario'),
